@@ -1,0 +1,7 @@
+﻿  function1.cpp
+C:\Users\Lenovo\source\repos\Taxi_trajectory_analysis\function1.cpp(35,11): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+C:\Users\Lenovo\source\repos\Taxi_trajectory_analysis\function1.cpp(36,11): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+C:\Users\Lenovo\source\repos\Taxi_trajectory_analysis\function1.cpp(192,18): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+C:\Users\Lenovo\source\repos\Taxi_trajectory_analysis\function1.cpp(217,21): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+C:\Users\Lenovo\source\repos\Taxi_trajectory_analysis\function1.cpp(218,19): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+  Taxi_trajectory_analysis.vcxproj -> C:\Users\Lenovo\source\repos\Taxi_trajectory_analysis\Debug\Taxi_trajectory_analysis.exe
