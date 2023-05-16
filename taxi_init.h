@@ -7,39 +7,100 @@ using namespace std;
 //分割函数,用于将数据集的出租车信息分割成车名、时间的日时分秒、空间经纬度
 vector<string> Split(const string& str, char split);
 
+
+
+
+
+
+
+
 //出租车类序列化函数,用于出租车数据清洗和建立的出租车类信息序列化
 //方便后续快速反序列化进行类的初始化。
-void boost_archive_taxi();
+void boost_archive_taxi(const int d);
+
+//文件处理版本
+void boost_archive_taxi2(const int d);
+
 
 //反序列化出租车类函数,用于快速建立和使用需要的出租车对象信息,返回对应的反序列化出租车对象信息
 taxi boost_iarchive_taxi(int i);
 
+//文件处理版本
+taxi boost_iarchive_taxi2(int i);
+
 //taxi反序列化信息输入到文件中进行正常表示,方便其他操作
 void taxifile(taxi& t);
+
+
+
+
+
 
 //出租车时间分布类序列化函数,用于对出租车轨迹点时间信息的分类和处理,以分钟为单位
 //方便后续快速反序列化进行类的初始化。
 void boost_archive_time();
 
+//文件版本
+void boost_archive_time2(int needday,int kkk);
+
+
 //反序列化出租车时间分布类函数,用于快速建立和使用需要对应时间段的出租车信息,返回对应的反序列化出租车时间分布类对象信息
 time_distribution boost_iarchive_time(int i,int j,int k);
+
+//文件版本
+time_distribution boost_iarchive_time2(int i, int j, int k);
+
+
+
+
+
+
+
+
 
 //出租车空间分布类序列化函数,用于对出租车轨迹点北京内空间信息的分类和处理,以0.01经纬度变化为单位
 //方便后续快速反序列化进行类的初始化。
 void boost_archive_position_in();
 
+//文件版本
+void boost_archive_position_in2();
+
+
+
 //出租车空间分布类序列化函数,用于对出租车轨迹点北京外空间信息的处理,作为一个整体使用
 //方便后续快速反序列化进行类的初始化。
 void boost_archive_position_out();
 
+void boost_archive_position_out2();
+
+
+
+
+
+
 //反序列化出租车北京内空间分布类函数,用于快速建立和使用需要对应空间位置的出租车信息,返回对应的反序列化出租车北京内空间分布类对象信息
 position_distribution_inBeiJing boost_iarchive_position_in(double i,double j);
+
+//文件版本
+position_distribution_inBeiJing boost_iarchive_position_in2(double i, double j);
+
+
 
 //反序列化出租车北京外空间分布类函数,用于快速建立和使用需要对应空间位置的出租车信息,返回对应的反序列化出租车北京外空间分布类对象信息
 position_distribution_outBeiJing boost_iarchive_position_out();
 
+//文件版本
+position_distribution_outBeiJing boost_iarchive_position_out2();
+
+
+
+
+
 //反序列化路径图类,用于分析路径信息,因为该对象太大以引用方式传递
 void boost_pathserialization_iarchive(pathgraph&p);
+
+//文件版本
+void boost_pathserialization_iarchive2(pathgraph& p);
 
 
 

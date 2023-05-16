@@ -96,10 +96,15 @@ public:
 
 	//Point的无参构造函数:
 	Point();
-
+	
+	//Point的有参构造函数:
+	Point(int i1, int i2, int i3, int i4, int i5, double d1, double d2);
+	
 	//Point的初始化函数,此只用于序列化时对数据集分析结果的处理,以后直接反序列化即可,不会再用:
 	void Point_init(int i, string& s1, string& s2, string& s3);
-	
+	//另一个初始化函数,此用于文件读写含有点信息时,使用频繁
+	void Point_init2(int i1, int i2, int i3, int i4, int i5, double d1, double d2);
+
 	//获得出租车轨迹点序号名函数
 	int gettaxiname();
 
@@ -167,9 +172,10 @@ public:
 	//taxi的析构
 	~taxi();
 
-	//taxi初始化函数
+	//taxi初始化函数,第一个是序列化和文件写入使用,第二个是文件读取使用(反序列化不需要函数)
 	void taxi_init(vector<vector<string>>& vs);
-	
+	void taxi_init2(vector<vector<string>>& vs);
+
 	//taxi的各类信息返回函数,依次为点数量,车序号名,某点的经度,某点的纬度,某个具体点
 	int getsize();
 	int getname();
@@ -218,6 +224,9 @@ public:
 
 	//时间分布类的初始化函数,因不断传入出租车更新信息,取名为update
 	void time_distribution_update(taxi& vt, int i1, int i2, int i3);
+	
+	//时间分布类的文件读取初始化函数
+	void time_distribution_init(vector<vector<string>>& vs);
 	
 	//输出时间分布类该时刻的全部信息:
 	void print_time_distribution();
@@ -269,8 +278,23 @@ public:
 	//空间分布类的初始化函数,因不断传入出租车更新信息,取名为update
 	void position_distribution_inBeiJing_update(taxi& vt, double d1, double d2);
 
+	//空间分布类的另一个初始化函数,因不断传入点的更新信息,取名为update2
+	void position_distribution_inBeiJing_update2(Point& t, double d1, double d2);
+
+	//空间分布类的文件读取初始化函数
+	void position_distribution_inBeiJing_init(vector<vector<string>>& vs);
+
 	//输出空间分布类该空间范围内的全部信息:
 	void print_position_distribution_inBeiJing();
+
+	//获得对应经度
+	double getinit_Longitude();
+
+	//获得对应纬度
+	double getinit_Latitude();
+
+	//返回该空间内的全部出租车的全部信息
+	unordered_map<int, vector<Point>> getallpoint();
 
 	//获得某个出租车在该空间范围内的全部信息
 	pair<int, vector<Point>>& get_onetime_onetaxi(int n);
@@ -311,9 +335,15 @@ public:
 	//空间分布类的初始化函数,因不断传入出租车更新信息,取名为update
 	void position_distribution_outBeiJing_update(taxi& vt);
 
+	//空间分布类的文件读取初始化函数
+	void position_distribution_outBeiJing_init(vector<vector<string>>& vs);
+
 	//输出空间分布类该空间范围内的全部信息:
 	void print_position_distribution_outBeiJing();
 
+	//获得该空间范围内全部出租车的全部点信息:
+	unordered_map<int, vector<Point>> getallpoint();
+	
 	//获得某个出租车在该空间范围内的全部信息
 	pair<int, vector<Point>>& get_onetime_onetaxi(int n);
 
@@ -402,9 +432,17 @@ public:
 	//更新函数,根据传入的两个轨迹点进行经过次数的更新和最短时间的更新和最短时间所用结点的更新
 	void pathEdgeupdate(Point a, Point b);
 
+	//初始化函数,根据文件的读取信息进行初始化
+	void pathEdge_init(double d1,double d2,double d3,double d4,int i5,double d6,int i7,int  i8,double i9,double i10,int i11,int i12,int i13,int i14,int i15,double i16,double i17,int i18,int i19,int i20,int i21);
+
+
 	//获得边所用的两个结点中的一个
 	pathNode* getpathNode1();
 	pathNode* getpathNode2();
+
+	//获得开始最短时间点和结束最短时间点
+	Point getshortesttime_taxistart();
+	Point getshortesttime_taxiend();
 
 	//获得经过该边的次数
 	int getpathcount();
@@ -458,6 +496,9 @@ public:
 	//根据传入的出租车进行对图信息的更新
 	void pathgraphupdate(taxi& t);
 
+	//图的文件读取初始化函数
+	void pathgraph_init(vector<vector<string>>& vs);
+	
 	//函数功能6的辅助函数,根据传入的点信息进行对图信息的更新
 	void pathgreaphupdate2(Point p1, Point p2);
 
@@ -471,6 +512,9 @@ public:
 
 	//对图进行序列化
 	void pathserialization();
+
+	//文件版本
+	void pathserialization2();
 
 	//函数功能5的辅助函数 
 	void function_path_frequent_analysis_init();

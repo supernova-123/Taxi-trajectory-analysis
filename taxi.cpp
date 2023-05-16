@@ -118,6 +118,25 @@ void taxi::taxi_init(vector<vector<string>>& vs)
 	return;
 }
 
+//taxi通过文件读取初始化函数,使用频繁,每次对出租车完成初始化时使用
+//传入参数为处理好的出租车信息二维数组,第一行分别为出租车序号名和点大小,其他行为点信息,分别为经度,纬度,天,时,分,秒
+void taxi::taxi_init2(vector<vector<string>>& vs) 
+{
+	//序号名初始化
+	name = stoi(vs[0][0]);
+	//大小初始化
+	size = stoi(vs[0][1]);
+	//大小非零则点信息循环初始化
+	pv = new Point[size];
+	if (size != 0) {
+		for (int i = 0; i < size; i++)
+		{
+			pv[i].Point_init2(name, stoi(vs[i + 1][2]), stoi(vs[i + 1][3]), stoi(vs[i + 1][4]), stoi(vs[i + 1][5]), stod(vs[i + 1][0]), stod(vs[i + 1][1]));
+		}
+	}
+	return;
+}
+
 //返回taxi的各类有效信息
 int taxi::getsize() { return size; }
 int taxi::getname() { return name; }

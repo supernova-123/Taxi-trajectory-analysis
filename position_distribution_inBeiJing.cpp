@@ -58,6 +58,70 @@ void position_distribution_inBeiJing::position_distribution_inBeiJing_update(tax
 	}
 	return;
 }
+//position_distribution_inBeiJing类的初始化,以0.01*0.01经纬度的变化为单位,每次输入一个点信息进行保存
+//d1,d2对应了需要更新的空间的经纬度信息
+void position_distribution_inBeiJing::position_distribution_inBeiJing_update2(Point& t, double d1, double d2)
+{
+	init_Longitude = d1;
+	init_Latitude = d2;
+	auto i = posmap.find(t.gettaxiname());
+	if (i == posmap.end())
+	{
+		vector<Point>temp;
+		temp.push_back(t);
+		posmap.insert({ t.gettaxiname(),temp });
+
+	}
+	else 
+	{
+		i->second.push_back(t);
+	}
+	return;
+}
+
+//空间分布类的文件读取初始化函数
+void position_distribution_inBeiJing::position_distribution_inBeiJing_init(vector<vector<string>>& vs)
+{
+	//-1和0对应的是标记是否是第一次行信息
+	int name = -1;
+	for (auto i : vs)
+	{
+		//是第一行
+		if(name==-1)
+		{
+			//存储的对应经纬度进行初始化
+			init_Longitude = stod(i[0]);
+			init_Latitude = stod(i[1]);
+			name = 0;
+			continue;
+		}
+
+		//不是第一行且如果是某个车的总信息一行信息
+		if (i.size() == 2)
+		{
+			//插入对应序号名和空容器
+			name = stoi(i[0]);
+			vector<Point> temp;
+			posmap.insert({ name, temp });
+		}
+
+		//如果是其中的某个点
+		else
+		{
+			Point temp;
+
+			//点的初始化
+			temp.Point_init2(name, stoi(i[2]), stoi(i[3]), stoi(i[4]), stoi(i[5]), stod(i[0]), stod(i[1]));
+
+			//点放入车的对应容器中
+			auto itemp = posmap.find(name);
+
+
+			itemp->second.push_back(temp);
+		}
+	}
+	return;
+}
 
 //输出该空间范围内的全部信息
 void position_distribution_inBeiJing::print_position_distribution_inBeiJing()
@@ -71,6 +135,16 @@ void position_distribution_inBeiJing::print_position_distribution_inBeiJing()
 	}
 	return;
 }
+
+//获得对应经度
+double position_distribution_inBeiJing::getinit_Longitude() { return init_Longitude; }
+
+//获得对应纬度
+double position_distribution_inBeiJing::getinit_Latitude() { return init_Latitude; }
+
+//返回该空间内的全部出租车的全部信息
+unordered_map<int, vector<Point>> position_distribution_inBeiJing::getallpoint() 
+{ return posmap; }
 
 //返回对出租车序号名的查询信息,查询到了就将该车该空间范围的所有信息返回,否则返回序号名为0的无效信息对
 pair<int, vector<Point>>& position_distribution_inBeiJing::get_onetime_onetaxi(int n)

@@ -54,6 +54,40 @@ void position_distribution_outBeiJing::position_distribution_outBeiJing_update(t
 	return;
 }
 
+//空间分布类的文件读取初始化函数
+void position_distribution_outBeiJing::position_distribution_outBeiJing_init(vector<vector<string>>& vs)
+{
+	int name =0;
+	for (auto i : vs)
+	{
+
+		//如果是某个车的总信息一行信息
+		if (i.size() == 2)
+		{
+			//插入对应序号名和空容器
+			name = stoi(i[0]);
+			vector<Point> temp;
+			posmap.insert({ name, temp });
+		}
+
+		//如果是其中的某个点
+		else
+		{
+			Point temp;
+
+			//点的初始化
+			temp.Point_init2(name, stoi(i[2]), stoi(i[3]), stoi(i[4]), stoi(i[5]), stod(i[0]), stod(i[1]));
+
+			//点放入车的对应容器中
+			auto itemp = posmap.find(name);
+
+
+			itemp->second.push_back(temp);
+		}
+	}
+	return;
+}
+
 //输出该空间范围内的全部信息
 void position_distribution_outBeiJing::print_position_distribution_outBeiJing()
 {
@@ -67,6 +101,11 @@ void position_distribution_outBeiJing::print_position_distribution_outBeiJing()
 	return;
 }
 	
+unordered_map<int, vector<Point>> position_distribution_outBeiJing::getallpoint() 
+{
+	return posmap;
+}
+
 //返回对出租车序号名的查询信息,查询到了就将该车该空间范围的所有信息返回,否则返回序号名为0的无效信息对
 pair<int, vector<Point>>& position_distribution_outBeiJing::get_onetime_onetaxi(int n)
 {
