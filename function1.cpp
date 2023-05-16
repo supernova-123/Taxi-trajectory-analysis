@@ -48,7 +48,7 @@ int function_findtaxinum_somewhere(set<Point, CMP>& s, double* pos, int day, int
 			for (double d2 = startLatitude; d2 < endLatitude; d2 += 0.01)
 			{
 				//序列化空间分布类对象
-				newpdi[(int)((d1 - startLongitude) * 100)][(int)((d2 - startLatitude) * 100)] = boost_iarchive_position_in(d1, d2);
+				newpdi[(int)((d1 - startLongitude) * 100)][(int)((d2 - startLatitude) * 100)] = boost_iarchive_position_in2(d1, d2);
 			}
 		}
 
@@ -68,14 +68,15 @@ int function_findtaxinum_somewhere(set<Point, CMP>& s, double* pos, int day, int
 				}
 			}
 
-			//功能使用处,根据s内信息和counttaxi进行分析
+			//功能使用处,根据s内信息和counttaxi进行分析,将结果写入到对应文件中
 			if (output) {
-				cout << "in here and in this time , taxinum =" << counttaxi << endl;
-
+				ofstream ofs("D:\\result\\function_findtaxinum_somewhere.txt",ios::trunc);
+				ofs << counttaxi << '\n';
 				for (auto i : s)
 				{
-					cout << i.gettaxiname() << " " << i.getday() << " " << i.gethour() << " " << i.getminute() << " " << i.getsecond() << " " << i.getLongitude() << "  " << i.getLatitude() << endl;
+					ofs << setiosflags(ios::fixed) << setprecision(5) << i.gettaxiname() <<"," << i.getLongitude() << "," << i.getLatitude() << "," << i.getday() << "," << i.gethour() << "," << i.getminute() << "," << i.getsecond()  << '\n';
 				}
+				ofs.close();
 			}
 		}
 
@@ -120,7 +121,7 @@ int function_findtaxinum_somewhere(set<Point, CMP>& s, double* pos, int day, int
 			for (int i = 0; i < countnum; i++) {
 
 				//序列化时间分布类对象
-				newtd[i] = boost_iarchive_time(dayreal, hourreal, minutereal);
+				newtd[i] = boost_iarchive_time2(dayreal, hourreal, minutereal);
 				minutereal++;
 				//计算下一个时间是否要跨小时/天
 				if (minutereal > 59)
@@ -145,11 +146,13 @@ int function_findtaxinum_somewhere(set<Point, CMP>& s, double* pos, int day, int
 
 			//函数功能使用处
 			if (output) {
-				cout << "in here and in this time , taxinum =" << counttaxi << endl;
+				ofstream ofs("D:\\result\\function_findtaxinum_somewhere.txt", ios::trunc);
+				ofs << counttaxi << '\n';
 				for (auto i : s)
 				{
-					cout << i.gettaxiname() << " " << i.getday() << " " << i.gethour() << " " << i.getminute() << " " << i.getsecond() << " " << i.getLongitude() << "  " << i.getLatitude() << endl;
+					ofs << setiosflags(ios::fixed) << setprecision(5) << i.gettaxiname() << "," << i.getLongitude() << " ," << i.getLatitude() << "," << i.getday() << "," << i.gethour() << "," << i.getminute() << "," << i.getsecond() <<  '\n';
 				}
+				ofs.close();
 			}
 
 			//使用结束,删除反序列化信息
@@ -196,7 +199,7 @@ void function_regional_density_analysis(int r, int day, int hour, int minute, in
 		for (int i = 0; i < countnum; i++) {
 			
 			//序列化时间分布类对象
-			newtd[i] = boost_iarchive_time(dayreal, hourreal, minutereal);
+			newtd[i] = boost_iarchive_time2(dayreal, hourreal, minutereal);
 
 			//计算下一个时间是否要跨小时/天
 			minutereal++;
@@ -272,25 +275,32 @@ void function_regional_density_analysis(int r, int day, int hour, int minute, in
 				}
 			}
 
-			//根据区域保存信息进行用户的需求处理
-			if (output) {
-				cout << "n:" << n << endl;
-				for (int i = 0; i < countrnumLong; i++)
-				{
-					for (int j = 0; j < countrnumLa; j++)
-					{
-						if (pdr[i][j]->getcountsize(n) >= 30)
-						{
-							cout << "pdr[" << i << "][" << j << "]" << endl;
-							cout << pdr[i][j]->getcountsize(n) << endl;
-						}
-					}
-				}
-				cout << "podr:" << endl;
-				cout << pdor->getcountsize(n) << endl;
-			}
 		}
-
+		ofstream ofs("D:\\result\\function_regional_density_analysis.txt", ios::trunc);
+		//根据区域保存信息进行用户的需求处理
+		if (output) {
+			ofs << changesize << '\n';
+			for (int i = 0; i < countrnumLong; i++)
+			{
+				for (int j = 0; j < countrnumLa; j++)
+				{
+					ofs << i << "," << j  << '\n';
+					for (int n = 0; n < changesize; n++) {
+						ofs << n << "," << pdr[i][j]->getcountsize(n);
+						for (auto i : pdr[i][j]->gettaxijudge(n))
+							ofs << "," << i;
+						ofs << '\n';
+					}
+					
+				}
+			}
+			ofs << "podr";
+			for (int n = 0; n < changesize; n++) {
+				ofs << "," << pdor->getcountsize(n);
+			}
+			ofs << '\n';
+		}
+		ofs.close();
 		//功能执行完毕,删除全部临时反序列化信息和r区域信息
 		for (int i = 0; i < countrnumLong; i++)
 		{
@@ -376,10 +386,12 @@ set<Point, CMP> function_region_association_analysis_one(double* pos1, double* p
 	}
 	//获得了全部的车流出租车轨迹点信息,进行用户相关需求输出
 	if (output) {
-		cout << "taxi exchange number: " << taxicmp.size() << endl;
+		ofstream ofs("D:\\result\\function_region_association_analysis_one.txt", ios::trunc);
+		ofs  << taxicmp.size() << '\n';
 		for (auto i : *information_rect_exchange) {
-			cout << "taxi information: " << i.gettaxiname() << " " << i.getLongitude() << " " << i.getLatitude() << " " << i.gettimes() << endl;
+			ofs << setiosflags(ios::fixed) << setprecision(5) << i.gettaxiname() << "," << i.getLongitude() << "," << i.getLatitude() << "," << i.getday() << "," << i.gethour() << "," << i.getminute() << "," << i.getsecond()  << '\n';
 		}
+		ofs.close();
 	}
 
 	//功能调用结束,清空矩阵信息,腾出内存为其他功能使用
@@ -422,7 +434,7 @@ void function_region_association_analysis_two(double* pos, int day, int hour, in
 	
 	//遍历taxicount的出租车序号名,将对应的出租车文件反序列化,获得该出租车全部信息
 	for (auto i : taxicount) {
-		newvtaxi[j++] = boost_iarchive_taxi(i);
+		newvtaxi[j++] = boost_iarchive_taxi2(i);
 	}
 
 	//遍历获得的全部出租车信息,判断分析的时间段内的所有轨迹点是否没有出现在矩形内
@@ -478,11 +490,13 @@ void function_region_association_analysis_two(double* pos, int day, int hour, in
 
 	//根据用户需要输出相关信息
 	if (output) {
-		cout << "taxicount_exchange: " << taxicount_exchange.size() << endl;
+		ofstream ofs("D:\\result\\function_region_association_analysis_two.txt", ios::trunc);
+		ofs << taxicount_exchange.size() << '\n';
 		for (auto i : *information_rect_exchange)
 		{
-			cout << "taxi information: " << i.gettaxiname() << " " << i.getLongitude() << " " << i.getLatitude() << " " << i.gettimes() << endl;
+			ofs << setiosflags(ios::fixed) << setprecision(5) << i.gettaxiname() << "," << i.getLongitude() << "," << i.getLatitude() << "," << i.getday() << "," << i.gethour() << "," << i.getminute() << "," << i.getsecond() << '\n';
 		}
+		ofs.close();
 	}
 	//功能调用结束,清空矩阵信息,腾出内存为其他功能使用
 	information_rect->clear();

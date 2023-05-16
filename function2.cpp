@@ -15,8 +15,8 @@ vector<vector<string>> function_path_frequent_analysis1(double x,int k, bool out
 	if (k >= 0 and k < 10000 and x >= 0) {
 		
 		//如果合理打开已经保存好的file文件(存储着pathEdge的对象)和class文件(存储相关信息)
-		ifstream ifs1("E:\\pathdata\\pathsortedge_forcount_file", ios::in | ios::binary);
-		ifstream ifs2("E:\\pathdata\\pathsortedge_forcount_class.txt", ios::in);
+		ifstream ifs1("D:\\pathdata\\pathsortedge_forcount_file", ios::in | ios::binary);
+		ifstream ifs2("D:\\pathdata\\pathsortedge_forcount_class.txt", ios::in);
 
 		//结果容器保存
 		vector<pathEdge> result;
@@ -55,13 +55,21 @@ vector<vector<string>> function_path_frequent_analysis1(double x,int k, bool out
 			{ break; }
 		}
 		if (output) {
-			cout << "effective number k:" << i << endl;
+			ofstream ofs("D:\\result\\function_path_frequent_analysis1.txt",ios::trunc);
+			ofs << i << '\n';
 			//遍历结果容器中的有效路径对象
 			for (int j = 0; j < i; j++)
 			{
 				//输出结果容器中的有效信息和上面保存的结点经纬度信息
-				result[j].printpath_information2(stod(vstemp[j][0]), stod(vstemp[j][1]), stod(vstemp[j][2]), stod(vstemp[j][3]));
+				ofs << setiosflags(ios::fixed) << setprecision(5)
+					<< vstemp[j][0] << ","
+					<< vstemp[j][1] << ","
+					<< vstemp[j][2] << ","
+					<< vstemp[j][3] << ","
+					<< result[j].getpathcount() << ","
+					<< result[j].getpathlen() << '\n';
 			}
+			ofs.close();
 		}
 		return vstemp;
 	}
@@ -69,7 +77,9 @@ vector<vector<string>> function_path_frequent_analysis1(double x,int k, bool out
 	//k和x输入有误则输出错误信息
 	else 
 	{
-		cout << "input error!" << endl;
+		ofstream ofs("D:\\result\\function_path_frequent_analysis1.txt", ios::trunc);
+		ofs << -1 << '\n';
+		ofs.close();
 		vector<vector<string>> vstemp;
 
 		//返回无效信息
@@ -108,7 +118,7 @@ vector<vector<double>> function_path_frequent_analysis2(double* pos1, double* po
 	//对车流交换的出租车进行反序列化
 	for (auto i : taxi_exchange_name) 
 	{
-		taxi_use[index++] = boost_iarchive_taxi(i);
+		taxi_use[index++] = boost_iarchive_taxi2(i);
 	}
 
 	//建立路径的图,用于分析其他数据
@@ -191,10 +201,20 @@ vector<vector<double>> function_path_frequent_analysis2(double* pos1, double* po
 
 	//输出前k条路径的相关信息
 	if (output) {
+		ofstream ofs("D:\\result\\function_path_frequent_analysis2.txt", ios::trunc);
+		ofs << x << '\n';
 		for (auto i : k_for)
 		{
-			i.printpath_information();
+			ofs << setiosflags(ios::fixed) << setprecision(5)
+				<< i.getpathNode1()->getLongitudeNode() << ","
+				<< i.getpathNode1()->getLatitudeNode() << ","
+				<< i.getpathNode2()->getLongitudeNode() << ","
+				<< i.getpathNode2()->getLatitudeNode() << ","
+				<< i.getpathcount() << ","
+				<< i.getpathlen() << '\n';
+
 		}
+		ofs.close();
 	}
 
 	//返回路径的结点数组
@@ -205,8 +225,8 @@ vector<vector<double>> function_path_frequent_analysis2(double* pos1, double* po
 vector<vector<string>> function_path_frequent_analysis2_neighbor(double* pos1, double* pos2, int k, bool output)
 {
 	//如果合理打开已经保存好的file文件(存储着pathEdge的对象)和class文件(存储相关信息)
-	ifstream ifs1("E:\\pathdata\\pathsortedge_forcount_file", ios::in | ios::binary);
-	ifstream ifs2("E:\\pathdata\\pathsortedge_forcount_class.txt", ios::in);
+	ifstream ifs1("D:\\pathdata\\pathsortedge_forcount_file", ios::in | ios::binary);
+	ifstream ifs2("D:\\pathdata\\pathsortedge_forcount_class.txt", ios::in);
 
 	//结果容器保存
 	vector<pathEdge> result;
@@ -255,13 +275,21 @@ vector<vector<string>> function_path_frequent_analysis2_neighbor(double* pos1, d
 		}
 	}
 	if (output) {
-		cout << "effective number k:" << i << endl;
+		ofstream ofs("D:\\result\\function_path_frequent_analysis2_neighbor.txt", ios::trunc);
+		ofs << i << '\n';
 		//遍历结果容器中的有效路径对象
 		for (int j = 0; j < i; j++)
 		{
 			//输出结果容器中的有效信息和上面保存的结点经纬度信息
-			result[j].printpath_information2(stod(vstemp[j][0]), stod(vstemp[j][1]), stod(vstemp[j][2]), stod(vstemp[j][3]));
+			ofs << setiosflags(ios::fixed) << setprecision(5)
+				<< vstemp[j][0] << ","
+				<< vstemp[j][1] << ","
+				<< vstemp[j][2] << ","
+				<< vstemp[j][3] << ","
+				<< result[j].getpathcount() << ","
+				<< result[j].getpathlen() << '\n';
 		}
+		ofs.close();
 	}
 	return vstemp;
 }
@@ -329,7 +357,7 @@ vector<Point> function_pathuse_shortesttime(double* pos1, double* pos2, int day,
 	}
 
 	//定义一个出租车反序列化,对应的是最短路径的轨迹点出租车序号名
-	taxi t = boost_iarchive_taxi(a.gettaxiname());
+	taxi t = boost_iarchive_taxi2(a.gettaxiname());
 
 	//置标记为0
 	int flag = 0;
@@ -370,7 +398,13 @@ vector<Point> function_pathuse_shortesttime(double* pos1, double* pos2, int day,
 	}
 	//输出最短时间信息
 	if (output) {
-		cout << "shortest time:" << shortest_time << endl;
+		ofstream ofs("D:\\result\\function_pathuse_shortesttime.txt", ios::trunc);
+		ofs  << shortest_time << '\n';
+		for (auto i : result)
+		{
+			ofs << setiosflags(ios::fixed) << setprecision(5) << i.gettaxiname() << "," << i.getLongitude() << "," << i.getLatitude() << "," << i.getday() << "," << i.gethour() << "," << i.getminute() << "," << i.getsecond() << '\n';
+		}
+		ofs.close();
 	}
 	//返回结果容器
 	return result;

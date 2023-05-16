@@ -14,6 +14,17 @@ using namespace std;
 //Point的无参构造函数:
 Point::Point(): taxiname(0), times(), Longitude(0), Latitude(0) {}
 
+//有参构造函数:
+//传入参数为出租车序号名,天,时,分,秒,经度,纬度
+Point::Point(int i1,int i2,int i3,int i4,int i5,double d1,double d2):
+	taxiname(i1),Longitude(d1),Latitude(d2)
+{
+	times[0] = i2;
+	times[1] = i3;
+	times[2] = i4;
+	times[3] = i5;
+}
+
 //Point的初始化函数,此只用于序列化时对数据集分析结果的处理,以后直接反序列化即可,不会再用:
 void Point::Point_init(int i, string& s1, string& s2, string& s3)
 {
@@ -24,6 +35,20 @@ void Point::Point_init(int i, string& s1, string& s2, string& s3)
 	times[3] = stoi(s1.substr(17, 2));
 	Longitude = stod(s2);
 	Latitude = stod(s3);
+}
+
+//Point的另一个初始化函数, 此用于文件读写含有点信息时, 使用频繁
+//传入参数为出租车序号名,天,时,分,秒,经度,纬度
+void Point::Point_init2(int i1, int i2, int i3, int i4, int i5, double d1, double d2)
+{
+	taxiname = i1;
+	times[0] = i2;
+	times[1] = i3;
+	times[2] = i4;
+	times[3] = i5;
+	Longitude = d1;
+	Latitude = d2;
+	return;
 }
 
 //下面为Point成员信息的返回函数

@@ -67,6 +67,20 @@ void pathEdge::pathEdgeupdate(Point a, Point b)
 	return;
 }
 
+//初始化函数,根据文件的读取信息进行初始化
+//参数懒得写了,自己看把
+void pathEdge::pathEdge_init(double d1, double d2, double d3, double d4, int i5, double d6, int i7, int  i8, double d9, double d10, int i11, int i12, int i13, int i14, int i15, double d16, double d17, int i18, int i19, int i20, int i21)
+{
+	p1 = new pathNode(d1, d2);
+	p2 = new pathNode(d3, d4);
+	count = i5;
+	len = d6;
+	shortesttime = i7;
+	shortesttime_taxistart.Point_init2(i8, i11, i12, i13, i14, d9, d10 );
+	shortesttime_taxiend.Point_init2(i15, i18, i19, i20, i21, d16, d17);
+	return;
+}
+
 //返回边的一个结点
 pathNode* pathEdge::getpathNode1()
 {
@@ -77,6 +91,18 @@ pathNode* pathEdge::getpathNode1()
 pathNode* pathEdge::getpathNode2()
 {
 	return p2;
+}
+
+//返回最短时间开始点
+Point pathEdge::getshortesttime_taxistart()
+{
+	return shortesttime_taxistart;
+}
+
+//返回最短时间结束点
+Point pathEdge::getshortesttime_taxiend()
+{
+	return shortesttime_taxiend;
 }
 
 //返回边被经过的次数
@@ -213,6 +239,30 @@ void pathgraph::pathgraphupdate(taxi& t)
 	}
 	return;
 }
+
+//图的文件读取初始化函数
+void pathgraph::pathgraph_init(vector<vector<string>>& vs)
+{
+	bool flag = true;
+	for(auto i:vs)
+	{
+		if (i.size() >= 5) {
+			pathEdge* temp = new pathEdge;
+			(*temp).pathEdge_init(stod(i[0]), stod(i[1]), stod(i[2]), stod(i[3]), stoi(i[4]), stod(i[5]), stoi(i[6]), stoi(i[7]), stod(i[8]), stod(i[9]), stoi(i[10]), stoi(i[11]), stoi(i[12]), stoi(i[13]), stoi(i[14]), stod(i[15]), stod(i[16]), stoi(i[17]), stoi(i[18]), stoi(i[19]), stoi(i[20]));
+			pathEdgemap.insert({ i[21], temp });
+		}
+		else if(i.size()==2)
+		{
+			break;
+		}
+		else 
+		{
+			pathNode* temp = new pathNode(stod(i[1]), stod(i[2]));
+			pathNodemap.insert({ i[0],temp });
+		}
+	}
+}
+
 //函数功能6的辅助函数,根据传入的点信息进行对图信息的更新
 void pathgraph::pathgreaphupdate2(Point a, Point b)
 {
@@ -321,7 +371,6 @@ void pathgraph::function_path_frequent_analysis_init()
 	{
 		//ofs1负责写入结点经纬度和边的频繁度、长度和最短时间,分行输入
 		ofs1 << (i.second->getpathNode1())->getLongitudeNode() << "," << (i.second->getpathNode1())->getLatitudeNode() << "," << (i.second->getpathNode2())->getLongitudeNode() << "," << (i.second->getpathNode2())->getLatitudeNode() << "," << i.second->getpathcount() << "," << i.second->getpathlen() << "," << i.second->getpathshortesttime() << "\n";
-		
 		
 		
 	}
