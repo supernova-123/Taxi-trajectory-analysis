@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>Taxi-trajectory-analysis</title>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/> 
+    <style >  
+        html, body, #container {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .input-card .btn {
+            margin-right: 1.2rem;
+            width: 9rem;
+        }
+
+        .input-card .btn:last-child {
+            margin-right: 0;
+        }
+
+    </style> 
+
+<script type="text/javascript">
+    window._AMapSecurityConfig = {
+      securityJsCode:"dbc8dea8a5336bf21885528752fd9dee",
+    }
+  </script>
+</head>
+
+<body>
+    <div id="container" class="map" tabindex="0"></div>    
+    <script type="text/javascript"
+          src="https://webapi.amap.com/maps?v=2.0&key=011154c1f97b927a44f3e5763ed553ef&plugin=AMap.Adaptor"></script>
+
+          <div class="input-card">
+            <h4>选择轨迹显示方案</h4>
+            <div class="input-item">
+                <input type="button" class="btn" value="显示所有车辆坐标" onclick='showmark(0)'/>   <!-- 点击后显示所有轨迹点 -->
+                <input type="number" id="taxiIndex"><button onclick="showmark(document.getElementById('taxiIndex').value)">显示该车坐标</button>
+            </div>
+        </div>
+
+<!-- 地图初始化和图标样式 -->
+<script type="text/javascript">
+    var map = new AMap.Map('container', {
+        zoom: 10,
+        center: [116.397428, 39.90923],
+        viewMode: '2D',
+    });
+var style = [{
+    url: 'https://webapi.amap.com/images/mass/mass0.png',  // 图标地址
+    size: new AMap.Size(2,2),      // 图标大小
+    anchor: new AMap.Pixel(2,2) // 图标显示位置偏移量，基准点为图标左上角
+},     {url: 'https://webapi.amap.com/images/mass/mass0.png',  // 图标地址
+    size: new AMap.Size(8,8),      // 图标大小
+    anchor: new AMap.Pixel(2,2) // 图标显示位置偏移量，基准点为图标左上角
+}]
+
+</script>
+
+
+<script>
+function showmark(number) {
+  map.clearMap();
+
+  //点击“显示所有车辆轨迹”，传值为0：
+  if(number==0){
+    for(var i=1;i<=500;i++){     //说明：循环读取文件后在地图上标记，速度较慢，平均一秒钟才能标记完一辆taxi的所有坐标，所以这里只选择标记前500辆
+    const filePath = `/taxibase/taxi${i}.txt`;
+    loadScript(filePath, function() {
+    const taxis = window.taxis;  //获取到在.txt中定义的taxis变量
+
+    
+
+    var mass = new AMap.MassMarks(taxis, {
+      opacity: 0.8,
+      zIndex: 111,
+      cursor: 'pointer',
+      style:style[0]
+    });
+
+    //鼠标指针处显示样式
+    var marker = new AMap.Marker({content: ' ', map: map});
+    mass.on('mouseover', function (e) {
+    marker.setPosition(e.data.lnglat);
+    marker.setLabel({content: e.data.name})
+    });
+
+    mass.setMap(map);
+  });
+  }
+}
+
+  else{
+    
+  //选择某一辆，传值为所选序号：
+  const filePath = `/taxibase/taxi${number}.txt`;
+    loadScript(filePath, function() {
+    const taxis = window.taxis;  //获取到在.txt中定义的taxis变量
+    var mass = new AMap.MassMarks(taxis, {
+      opacity: 0.8,
+      zIndex: 111,
+      cursor: 'pointer',
+      style:style[1]
+    });
+
+    //鼠标指针处显示样式
+    var marker = new AMap.Marker({content: ' ', map: map});
+    mass.on('mouseover', function (e) {
+    marker.setPosition(e.data.lnglat);
+    marker.setLabel({content: e.data.name})
+    });
+
+    mass.setMap(map);
+  });
+  }
+
+  
+}
+function loadScript(src, callback) {
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.async = true;
+  script.src = src;
+
+  script.onload = function() {
+    callback();
+  };
+  document.head.appendChild(script);
+}
+</script>
+</body>
+</html>
