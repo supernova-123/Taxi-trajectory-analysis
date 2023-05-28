@@ -4,6 +4,7 @@ Data Structure Curriculum Design of SCUT CS
 ## 使用说明：
 
 ### 一、数据文件的准备：
+##注意：以下说明的压缩包等数据集内容，本项目并不自带。需要时请联系负责该项目的朋友(本项目的Collaborators)。
 
 将Ddata压缩包解压缩到D盘中，此时准备好了文件版本数据的使用。
 
